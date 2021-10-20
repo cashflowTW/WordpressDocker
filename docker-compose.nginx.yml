@@ -1,17 +1,19 @@
-version: '3'
-
+version: '3.8'
 services:
-  nginx:
-    image: nginx
-    ports:
-      - 80:80
+  nginx-block:
+    build:
+      context: ./docker/nginx
+      dockerfile: Dockerfile
+    container_name: nginx-block
     restart: unless-stopped
-    container_name: nginx
+    ports: 
+      - 80:80
     volumes:
-      - ./docker/nginx:/etc/nginx/conf.d
-    command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
+      - ./docker/nginx/conf.d/test.conf:/etc/nginx/conf.d/test.conf
+      #一個一個加,否則blacklist檔案會被蓋掉
     networks:
       - nginx
+
 networks:
   nginx:
     driver: bridge
